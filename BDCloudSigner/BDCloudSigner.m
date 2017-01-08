@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Baidu.com, Inc. All Rights Reserved
+ * Copyright (c) 2017 Baidu.com, Inc. All Rights Reserved
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -62,7 +62,7 @@
         4) Add the concat string into array;
     2.Sort arry by ascending;
     3.Join each string in the array with '&';
- 
+
  @param items HTTP queries dictionary.
  @return Encoded query string.
  */
@@ -91,15 +91,15 @@
     if (!string) {
         return YES;
     }
-    
+
     if (![string isKindOfClass:[NSString class]]) {
         return YES;
     }
-    
+
     if (string.length == 0) {
         return YES;
     }
-    
+
     return NO;
 }
 
@@ -112,7 +112,7 @@
         formater.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
         [formater setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'Z'"];
     });
-    
+
     return [formater stringFromDate:date];
 }
 
@@ -121,19 +121,19 @@
         || [self isEmptyString:message]) {
         return nil;
     }
-    
+
     // hmac
     const char* keyBuffer = [key cStringUsingEncoding:NSASCIIStringEncoding];
     const char* msgBuffer = [message cStringUsingEncoding:NSASCIIStringEncoding];
     unsigned char outBuffer[CC_SHA512_DIGEST_LENGTH];
     CCHmac(kCCHmacAlgSHA256, keyBuffer, strlen(keyBuffer), msgBuffer, strlen(msgBuffer), outBuffer);
-    
+
     // format to hex string
     NSMutableString* result = [NSMutableString string];
     for (int i = 0; i < CC_SHA256_DIGEST_LENGTH; ++i) {
         [result appendFormat:@"%02x", outBuffer[i]];
     }
-    
+
     return result;
 }
 
@@ -141,19 +141,19 @@
     if ([self isEmptyString:url]) {
         return @"";
     }
-    
+
     static NSMutableCharacterSet* set;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
         set = [NSMutableCharacterSet alphanumericCharacterSet];
         [set addCharactersInString:@"-._~"];
     });
-    
+
     NSString* ret = [url stringByAddingPercentEncodingWithAllowedCharacters:set];
     if (!exclude) {
         return ret;
     }
-    
+
     return [ret stringByReplacingOccurrencesOfString:@"%2F" withString:@"/"];
 }
 
@@ -163,7 +163,7 @@
         if ([self isEmptyString:item.name]) {
             continue;
         }
-        
+
         NSString* name = item.name;
         NSString* value = item.value;
         name = [self uriEncode:name excludeSlash:NO];
@@ -171,7 +171,7 @@
         NSString* query = [NSString stringWithFormat:@"%@=%@", name, value];
         [encoding addObject:query];
     }
-    
+
     NSArray<NSString*>* sortedQueries = [encoding sortedArrayUsingSelector:@selector(compare:)];
     return [sortedQueries componentsJoinedByString:@"&"];
 }
@@ -180,27 +180,27 @@
     NSMutableArray* encoding = [NSMutableArray array];
     for (__strong NSString* name in headers.allKeys) {
         NSString* value = [headers objectForKey:name];
-        
+
         // trim
         value = [value stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-        
+
         // skip empty value
         if ([self isEmptyString:value]) {
             continue;
         }
-        
+
         // lowercase
         name = [name lowercaseString];
-        
+
         // URI encoding
         name = [self uriEncode:name excludeSlash:NO];
         value = [self uriEncode:value excludeSlash:NO];
-        
+
         // concat
         NSString* query = [NSString stringWithFormat:@"%@:%@", name, value];
         [encoding addObject:query];
     }
-    
+
     // sort
     NSArray<NSString*>* sortedQueries = [encoding sortedArrayUsingSelector:@selector(compare:)];
     return [sortedQueries componentsJoinedByString:@"\n"];
@@ -233,20 +233,20 @@
     if (![self check:request]) {
         return NO;
     }
-    
+
     NSURLComponents* components = [NSURLComponents componentsWithURL:request.URL resolvingAgainstBaseURL:NO];
-    
+
     // automatic set Host header field.
     NSString* host = components.host;
     if (components.port) {
         host = [NSString stringWithFormat:@"%@:%zd", host, components.port.integerValue];
     }
     [request setValue:host forHTTPHeaderField:@"Host"];
-    
+
     NSString* canonicalURI = [self generalCanonicalURI:components.path];
     NSString* canonicalQuery = [self generalCanonicalQuery:components.queryItems];
     NSString* canonicalHeaders = [self generalCanonicalHeader:request];
-    
+
     NSArray* signComponents = @[
         request.HTTPMethod,
         canonicalURI,
@@ -254,20 +254,20 @@
         canonicalHeaders,
     ];
     NSString* canonicalRequest = [signComponents componentsJoinedByString:@"\n"];
-    
+
     NSString* authPrefix = [self generalAuthStringPrefix:request];
     NSString* signingKey = [BDCloudSignerUtil hmac:self.credentials.secretKey message:authPrefix];
     NSString* signature = [BDCloudSignerUtil hmac:signingKey message:canonicalRequest];
-    
+
     signComponents = @[
         authPrefix,
         @"",
         signature
     ];
-    
+
     NSString* authorization = [signComponents componentsJoinedByString:@"/"];
     [request setValue:authorization forHTTPHeaderField:@"Authorization"];
-    
+
     return YES;
 }
 
@@ -275,12 +275,12 @@
     if (!request) {
         return NO;
     }
-    
+
     if ([BDCloudSignerUtil isEmptyString:self.credentials.accessKey]
         || [BDCloudSignerUtil isEmptyString:self.credentials.secretKey]) {
         return NO;
     }
-    
+
     return YES;
 }
 
@@ -294,17 +294,17 @@
 
 - (NSString*)generalCanonicalHeader:(NSMutableURLRequest*)request {
     NSDictionary<NSString*, NSString*>* headers = request.allHTTPHeaderFields;
-    
+
     NSArray<NSString*>* defaultHeaders = @[
                                            @"Host",
                                            @"Content-Length",
                                            @"Content-Type",
                                            @"Content-MD5"
                                            ];
-    
+
     NSString* lowerCaseHeader;
     NSMutableDictionary<NSString*, NSString*>* signHeaders = [NSMutableDictionary dictionary];
-    
+
     for (NSString* key in headers.allKeys) {
         lowerCaseHeader = key.lowercaseString;
         if ([lowerCaseHeader hasPrefix:@"x-bce-"] || [defaultHeaders containsObject:key]) {
@@ -312,7 +312,7 @@
             [signHeaders setObject:value forKey:key];
         }
     }
-    
+
     return [BDCloudSignerUtil headerEncode:signHeaders];
 }
 
@@ -334,12 +334,12 @@
     if (![self.credentials isKindOfClass:[BDCloudSTSCredentials class]]) {
         return NO;
     }
-    
+
     BDCloudSTSCredentials* credentials = (BDCloudSTSCredentials*)self.credentials;
     if ([BDCloudSignerUtil isEmptyString:credentials.sessionToken]) {
         return NO;
     }
-    
+
     return [super sign:request];
 }
 @end
