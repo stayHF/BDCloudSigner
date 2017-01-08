@@ -50,6 +50,7 @@
 
 /**
  The signature expire time range: abs(ServerTimestamp - signatureTimestamp) < expirationInSeconds.
+ The default value is 1800.
  */
 @property(nonatomic, assign) NSUInteger expiredTimeInSeconds;
 
