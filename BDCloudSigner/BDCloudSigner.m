@@ -125,7 +125,7 @@
     // hmac
     const char* keyBuffer = [key cStringUsingEncoding:NSASCIIStringEncoding];
     const char* msgBuffer = [message cStringUsingEncoding:NSASCIIStringEncoding];
-    unsigned char outBuffer[CC_SHA512_DIGEST_LENGTH];
+    unsigned char outBuffer[CC_SHA256_DIGEST_LENGTH];
     CCHmac(kCCHmacAlgSHA256, keyBuffer, strlen(keyBuffer), msgBuffer, strlen(msgBuffer), outBuffer);
 
     // format to hex string
