@@ -296,11 +296,11 @@
     NSDictionary<NSString*, NSString*>* headers = request.allHTTPHeaderFields;
 
     NSArray<NSString*>* defaultHeaders = @[
-                                           @"Host",
-                                           @"Content-Length",
-                                           @"Content-Type",
-                                           @"Content-MD5"
-                                           ];
+        @"Host",
+        @"Content-Length",
+        @"Content-Type",
+        @"Content-MD5"
+    ];
 
     NSString* lowerCaseHeader;
     NSMutableDictionary<NSString*, NSString*>* signHeaders = [NSMutableDictionary dictionary];
@@ -319,11 +319,11 @@
 - (NSString*)generalAuthStringPrefix:(NSMutableURLRequest*)request {
     NSString* timestamp = [BDCloudSignerUtil dateEncodeISO8601:[NSDate date]];
     NSArray* components = @[
-                            @"bce-auth-v1",
-                            self.credentials.accessKey,
-                            timestamp,
-                            @(self.expiredTimeInSeconds)
-                            ];
+        @"bce-auth-v1",
+        self.credentials.accessKey,
+        timestamp,
+        @(self.expiredTimeInSeconds)
+    ];
     return [components componentsJoinedByString:@"/"];
 }
 
