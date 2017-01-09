@@ -329,7 +329,7 @@
 				DEVELOPMENT_TEAM = 4RKCH4CTZ9;
 				INFOPLIST_FILE = UT/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.baidu.bce.UT;
+				PRODUCT_BUNDLE_IDENTIFIER = com.baidu.cloud.UT;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -340,7 +340,7 @@
 				DEVELOPMENT_TEAM = 4RKCH4CTZ9;
 				INFOPLIST_FILE = UT/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.baidu.bce.UT;
+				PRODUCT_BUNDLE_IDENTIFIER = com.baidu.cloud.UT;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

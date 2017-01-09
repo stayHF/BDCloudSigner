@@ -57,7 +57,7 @@
  Encode Http queries. The process is as follows:
     1.foreach key and value:
         1) if the key is an empty string, skip 2) 3) 4);
-        2) Encode the key and value with [BCEURIEncode encode:];
+        2) Encode the key and value;
         3) Concat URI encoded key and value with sign : "key=value";
         4) Add the concat string into array;
     2.Sort arry by ascending;
@@ -73,7 +73,7 @@
     1.foreach key and value:
         1) Trim the value, if the trimmed value is an empty string, skip 2) 3) 4) 5);
         2) Transform key to lower case;
-        3) Encode the transformed key and trimmed value with [BCEURIEncode encode:];
+        3) Encode the transformed key and trimmed value;
         4) Concat URI encoded key and value with colon : "key:value";
         5) Add the concat string into array;
     2.Sort arry by ascending;
