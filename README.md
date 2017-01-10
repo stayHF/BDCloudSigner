@@ -55,5 +55,5 @@ void sign() {
 }
 ```
 
-Visit [Baidu Cloud Services auth Document](https://cloud.baidu.com/doc/Reference/AuthenticationMechanism.html).
+Visit [Baidu Cloud Services Auth Document](https://cloud.baidu.com/doc/Reference/AuthenticationMechanism.html).
 
