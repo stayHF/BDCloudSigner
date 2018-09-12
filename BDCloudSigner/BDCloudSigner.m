@@ -340,6 +340,7 @@
         return NO;
     }
 
+    [request setValue:credentials.sessionToken forHTTPHeaderField:@"x-bce-security-token"];
     return [super sign:request];
 }
 @end
